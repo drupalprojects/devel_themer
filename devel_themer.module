@@ -217,9 +217,15 @@ function devel_themer_get_extension() {
 function devel_themer_catch_function() {
   $args = func_get_args();
 
-  // Get the function that is normally called.
+  // Get the hook argument passed to theme() by stepping through the backtrace
+  // to the closest entry of theme() being called, and get its first argument.
   $trace = debug_backtrace();
-  $hook = $trace[2]['args'][0];
+  foreach ($trace as $trace_entry) {
+    if ($trace_entry['function'] == 'theme') {
+      $hook = $trace_entry['args'][0];
+      break;
+    }
+  }
   array_unshift($args, $hook);
 
   $counter = devel_counter();
