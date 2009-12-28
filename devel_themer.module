@@ -18,20 +18,20 @@ function devel_themer_menu() {
     'title' => 'Devel Themer Enable',
     'page callback' => 'devel_themer_toggle',
     'page arguments' => array(1),
-    'access arguments' => array('access devel information'),
+    'access callback' => 'devel_themer_user_access',
     'type' => MENU_CALLBACK,
   );
   $items['devel_themer/disable'] = array(
     'title' => 'Theme Development Enable',
     'page callback' => 'devel_themer_toggle',
     'page arguments' => array(0),
-    'access arguments' => array('access devel information'),
+    'access callback' => 'devel_themer_user_access',
     'type' => MENU_CALLBACK,
   );
   $items['devel_themer/variables'] = array(
     'title' => 'Theme Development AJAX variables',
     'page callback' => 'devel_themer_ajax_variables',
-    'access arguments' => array('access devel information'),
+    'access callback' => 'devel_themer_user_access',
     'type' => MENU_CALLBACK,
   );
   return $items;
@@ -89,9 +89,15 @@ function devel_themer_admin_settings() {
   return system_settings_form($form);
 }
 
+/**
+ * Implementation of hook_perm().
+ */
+function devel_themer_perm() {
+  return array('access devel theme information');
+}
 
 function devel_themer_init() {
-  if (user_access('access devel information')) {
+  if (devel_themer_user_access()) {
     $path = drupal_get_path('module', 'devel_themer');
     // we inject our HTML after page has loaded we have to add this manually.
     if (has_krumo()) {
@@ -237,7 +243,7 @@ function devel_themer_catch_function() {
   $time = timer_stop($timer_name);
 
   $skip_calls = array('hidden', 'form_element', 'placeholder');
-  if (!empty($return) && !is_array($return) && !is_object($return) && user_access('access devel information')) {
+  if (!empty($return) && !is_array($return) && !is_object($return) && devel_themer_user_access()) {
     list($prefix, $suffix) = devel_theme_call_marker($hook, $counter, 'func');
     $start_return = substr($return, 0, 31);
     $start_prefix = substr($prefix, 0, 31);
@@ -645,4 +651,22 @@ function devel_themer_cleanup() {
  */
 function devel_themer_cron() {
   devel_themer_cleanup();
+}
+
+/**
+ * Determine whether the user has permission to access the information provided by this module.
+ *
+ * @param $account
+ *   (optional) The account to check, if not given use currently logged in user.
+ *
+ * @return
+ *   Boolean TRUE if the user has permission to access the information provided
+ *   by this module.
+ *
+ * @see user_access()
+ */
+function devel_themer_user_access($account = NULL) {
+  // Users with access to devel information from the devel module should
+  // automatically get access to the theme information as well.
+  return (user_access('access devel information', $account) || user_access('access devel theme information', $account));
 }
