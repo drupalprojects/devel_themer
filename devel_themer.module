@@ -14,6 +14,15 @@ function devel_themer_menu() {
     'access arguments' => array('administer site configuration'),
     'type' => MENU_NORMAL_ITEM,
   );
+  $items['devel_themer/variables'] = array(
+    'title' => 'Theme Development AJAX variables',
+    'page callback' => 'devel_themer_ajax_variables',
+    'access callback' => 'devel_themer_user_access',
+    'type' => MENU_CALLBACK,
+  );
+  // @todo These are questionable, since how can a module enable itself if it
+  //   is disabled. Should these be removed, or implementation change to disable
+  //   somehow other than actually disabling the module?
   $items['devel_themer/enable'] = array(
     'title' => 'Devel Themer Enable',
     'page callback' => 'devel_themer_toggle',
@@ -22,15 +31,9 @@ function devel_themer_menu() {
     'type' => MENU_CALLBACK,
   );
   $items['devel_themer/disable'] = array(
-    'title' => 'Theme Development Enable',
+    'title' => 'Devel Themer Disable',
     'page callback' => 'devel_themer_toggle',
-    'page arguments' => array(0),
-    'access callback' => 'devel_themer_user_access',
-    'type' => MENU_CALLBACK,
-  );
-  $items['devel_themer/variables'] = array(
-    'title' => 'Theme Development AJAX variables',
-    'page callback' => 'devel_themer_ajax_variables',
+    'page arguments' => array(1),
     'access callback' => 'devel_themer_user_access',
     'type' => MENU_CALLBACK,
   );
@@ -75,8 +78,9 @@ function devel_themer_ajax_variables($request_id, $call) {
  */
 function devel_themer_toggle($action) {
   $function = $action == 'enable' ? 'module_enable' : 'module_disable';
-  $$function('devel_themer');
-  drupal_set_message(t('Devel Themer module %action.', array('%action' => $action)));
+  // @todo See the todo within hook_menu().
+  //$function(array('devel_themer'));
+  //drupal_set_message(t('Devel Themer module %action.', array('%action' => $action)));
   drupal_goto();
 }
 
