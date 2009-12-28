@@ -103,10 +103,11 @@ function devel_themer_perm() {
 function devel_themer_init() {
   if (devel_themer_user_access()) {
     $path = drupal_get_path('module', 'devel_themer');
+    $path_to_devel = drupal_get_path('module', 'devel');
     // we inject our HTML after page has loaded we have to add this manually.
     if (has_krumo()) {
-      drupal_add_js($path. '/krumo/krumo.js');
-      drupal_add_css($path. '/krumo/skins/default/skin.css');
+      drupal_add_js($path_to_devel. '/krumo/krumo.js');
+      drupal_add_css($path_to_devel. '/krumo/skins/default/skin.css');
     }
     drupal_add_css($path .'/devel_themer.css');
     drupal_add_js($path .'/devel_themer.js');
@@ -120,8 +121,8 @@ function devel_themer_init() {
     }
     else
     {
-      drupal_add_js($path .'/ui.mouse.js');
-      drupal_add_js($path .'/ui.draggable.js');
+      drupal_add_js($path_to_devel .'/ui.mouse.js');
+      drupal_add_js($path_to_devel .'/ui.draggable.js');
     }
     
     // This needs to happen after all the other CSS.
