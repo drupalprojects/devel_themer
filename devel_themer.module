@@ -261,7 +261,7 @@ function devel_themer_catch_function() {
         $GLOBALS['devel_themer_stop'] = TRUE;
       }
       else {
-        $output = $prefix. "\n  ". $return. $suffix. "\n";
+        $output = variable_get('devel_themer_no_whitespace', FALSE) ? ($prefix . $return . $suffix) : ($prefix. "\n  ". $return. $suffix. "\n");
       }
 
       if ($meta['type'] == 'func') {
