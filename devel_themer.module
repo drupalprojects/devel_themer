@@ -127,7 +127,7 @@ function devel_themer_init() {
     
     // This needs to happen after all the other CSS.
     drupal_set_html_head('<!--[if IE]>
-    <link href="' . $path .'/devel_themer_ie_fix.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="' . base_path() . $path .'/devel_themer_ie_fix.css" rel="stylesheet" type="text/css" media="screen" />
 <![endif]-->');
     devel_themer_popup();
 
