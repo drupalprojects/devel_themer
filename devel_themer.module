@@ -389,13 +389,30 @@ function devel_themer_theme_twin() {
   $meta['path'] = $info['theme path'];
 
   // Include a file if the theme function or preprocess function is held elsewhere.
+  if (!empty($info['include files'])) {
+    foreach ($info['include files'] as $include_file) {
+      include_once($include_file);
+    }
+  }
+
+  // Handle compatibility with theme_registry_alters to prevent failures.
   if (!empty($info['file'])) {
+    static $included_files = array();
     $include_file = $info['file'];
-    if (isset($info['path'])) {
+    if (!empty($info['path'])) {
       $include_file = $info['path'] .'/'. $include_file;
     }
-    include_once($include_file);
+
+    if (empty($included_files[$include_file])) {
+      // Statically cache files we've already tried to include so we don't
+      // run unnecessary file_exists calls.
+      $included_files[$include_file] = TRUE;
+      if (file_exists('./'. $include_file)) {
+        include_once('./'. $include_file);
+      }
+    }
   }
+
   if (isset($info['devel_function_intercept'])) {
     // The theme call is a function.
     $output = call_user_func_array($info['devel_function_intercept'], $args);
