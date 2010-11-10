@@ -276,7 +276,7 @@ function devel_themer_catch_function() {
         }
       }
       else {
-        $name = $meta['used']. devel_themer_get_extension();
+        $name = $hook; 
         if (empty($suggestions)) {
           array_unshift($meta['suggestions'], $meta['used']);
         }
@@ -564,7 +564,7 @@ function devel_themer_popup() {
       'toggle_throbber' => ' <img src="'. base_path() . drupal_get_path('module', 'devel'). '/loader-little.gif' .'" alt="'. t('loading') .'" class="throbber" width="16" height="16" style="display:none" />',
       'parents' => t('Parents: '),
       'function_called' => t('Function called: '),
-      'template_called' => t('Template called: '),
+      'template_called' => t('Theme hook called: '),
       'candidate_files' => t('Candidate template files: '),
       'preprocessors' => t('Preprocess functions: '),
       'candidate_functions' => t('Candidate function names: '),
