@@ -116,7 +116,11 @@ function devel_themer_init() {
     if (module_exists('jquery_ui'))
     {
       jquery_ui_add('ui.core');
-      jquery_ui_add('ui.mouse');
+      // Early versions of jquery_ui still need ui.mouse included.
+      $jquery_version = explode(".",jquery_ui_get_version());
+      if ($jquery_version[0] < 1 || ($jquery_version[0] == 1 && $jquery_version[1] < 5)) {
+        jquery_ui_add('ui.mouse');
+      }
       jquery_ui_add('ui.draggable');
     }
     else
