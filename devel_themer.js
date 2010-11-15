@@ -136,7 +136,7 @@
       parents[parents.length] = obj;
     }
     if (obj && obj.parentNode) {
-      while (obj = obj.parentNode) {
+      while ((obj = obj.parentNode) && (obj.nodeType != 9)) {
         if ($(obj).attr('thmr') != undefined) {
           parents[parents.length] = obj;
         }
