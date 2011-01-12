@@ -206,7 +206,6 @@ function devel_themer_catch_function() {
 
   $counter = devel_counter();
   $variables['thmr_key'] = "thmr_" . $counter;
-  $variables['attributes']['thmr'] = "thmr_" . $counter;
   $timer_name = "thmr_$counter";
   timer_start($timer_name);
 
