@@ -48,7 +48,7 @@
     $('<div id="themer-toggle"><input type="checkbox" />'+ strs.themer_info +'</div>')
       .appendTo($('body'))
       .click(themerToggle);
-
+    $('#themer-popup').resizable();
     $('#themer-popup')
        .draggable({
                opacity: .6,

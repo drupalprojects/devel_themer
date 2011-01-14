@@ -107,6 +107,7 @@ function devel_themer_init() {
     drupal_add_js($base_path . 'misc/jquery.form.js');
     drupal_add_js($base_path . 'misc/ajax.js');
     drupal_add_library('system', 'ui.draggable');
+    drupal_add_library('system', 'ui.resizable');
 
     // This needs to happen after all the other CSS.
     drupal_add_css('<!--[if IE]>
