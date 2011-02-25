@@ -509,7 +509,7 @@ function devel_themer_theme_twin($hook, $variables) {
 
     $meta['suggestions'] = $suggestions;
     $meta['template_file'] = $template_file;
-    $meta['preprocessors'] = $info['preprocess functions'];
+    $meta['preprocessors'] = isset($info['preprocess functions']) ? $info['preprocess functions'] : array();
 
     $output = $render_function($template_file, $variables);
   }
