@@ -221,18 +221,22 @@
     parents += '</span>';
     // stick the parents spans in the #parents div
     $('#themer-popup #parents').empty().prepend(parents);
-    $('#themer-popup span.parent').click(function() {
-    	  thmr_id = $(this).attr('thmr');
-    	  thmr_obj = $("['thmr' = "+thmr_id+"]")[0];
-    	  themerDoIt(thmr_obj); })
-    .hover(function() {
-        // make them highlight their element on mouseover
-        $('#'+ $(this).attr('trig')).trigger('mouseover');
-      },
-      function() {
-        // and unhilight on mouseout
-        $('#'+ $(this).attr('trig')).trigger('mouseout');
-      });
+    $('#themer-popup span.parent')
+      .click(function() {
+        var thmr_id = $(this).attr('trig');
+        var thmr_obj = $('[thmr = "' + thmr_id + '"]')[0];
+        themerDoIt(thmr_obj);
+      })
+      .hover(
+        function() {
+          // make them highlight their element on mouseover
+          $('#'+ $(this).attr('trig')).trigger('mouseover');
+        },
+        function() {
+          // and unhilight on mouseout
+          $('#'+ $(this).attr('trig')).trigger('mouseout');
+        }
+      );
 
     if (vars == undefined) {
       // if there's no item in the settings array for this element
