@@ -94,25 +94,27 @@ function devel_themer_admin_settings() {
 
 function devel_themer_init() {
   if (user_access('access devel information')) {
-    $base_path = base_path();
-    $path = drupal_get_path('module', 'devel_themer');
-    $path_to_devel = drupal_get_path('module', 'devel');
-    // we inject our HTML after page has loaded we have to add this manually.
-    if (has_krumo()) {
-      drupal_add_js($path_to_devel . '/krumo/krumo.js');
-      drupal_add_css($path_to_devel . '/krumo/skins/default/skin.css');
-    }
-    drupal_add_css($path . '/devel_themer.css');
-    drupal_add_js($path . '/devel_themer.js');
-    drupal_add_js($base_path . 'misc/jquery.form.js');
-    drupal_add_js($base_path . 'misc/ajax.js');
+    // Add requisite libraries.
+    drupal_add_library('system', 'jquery.form');
+    drupal_add_library('system', 'drupal.ajax');
     drupal_add_library('system', 'ui.draggable');
     drupal_add_library('system', 'ui.resizable');
 
-    // This needs to happen after all the other CSS.
-    drupal_add_css('<!--[if IE]>
-    <link href="' . $path . '/devel_themer_ie_fix.css" rel="stylesheet" type="text/css" media="screen" />
-<![endif]-->', array('type' => 'inline'));
+    // Add this module's JS and CSS.
+    $path = drupal_get_path('module', 'devel_themer');
+    drupal_add_js($path . '/devel_themer.js');
+    drupal_add_css($path . '/devel_themer.css');
+    drupal_add_css($path . '/devel_themer_ie_fix.css', array('browsers' => array('IE' => TRUE, '!IE' => FALSE), 'media' => 'screen', 'weight' => 20, 'preprocess' => FALSE));
+
+    // Add krumo JS and CSS. We can't rely on krumo automatically doing this,
+    // because we add our HTML dynamically after initial page load.
+    if (has_krumo()) {
+      $path_to_devel = drupal_get_path('module', 'devel');
+      // Krumo files don't work correctly when aggregated.
+      drupal_add_js($path_to_devel . '/krumo/krumo.js', array('preprocess' => FALSE));
+      drupal_add_css($path_to_devel . '/krumo/skins/default/skin.css', array('preprocess' => FALSE));
+    }
+
     devel_themer_popup();
 
     if (!devel_silent() && variable_get('devel_themer_log', FALSE)) {
