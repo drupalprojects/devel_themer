@@ -14,20 +14,6 @@ function devel_themer_menu() {
     'access arguments' => array('administer site configuration'),
     'type' => MENU_NORMAL_ITEM,
   );
-  $items['devel_themer/enable'] = array(
-    'title' => 'Devel Themer Enable',
-    'page callback' => 'devel_themer_toggle',
-    'page arguments' => array(1),
-    'access arguments' => array('access devel information'),
-    'type' => MENU_CALLBACK,
-  );
-  $items['devel_themer/disable'] = array(
-    'title' => 'Theme Development Enable',
-    'page callback' => 'devel_themer_toggle',
-    'page arguments' => array(0),
-    'access arguments' => array('access devel information'),
-    'type' => MENU_CALLBACK,
-  );
   $items['devel_themer/variables'] = array(
     'title' => 'Theme Development AJAX variables',
     'page callback' => 'devel_themer_ajax_variables',
@@ -68,18 +54,6 @@ function devel_themer_ajax_variables($request_id, $call) {
 
   $commands[] = ajax_command_replace('div.themer-variables', '<div class="themer-variables">' . $content . '</div>');
   return array('#type' => 'ajax', '#commands' => $commands);
-}
-
-/**
- * A menu callback. Usually called from the devel block.
- *
- * @return void
- */
-function devel_themer_toggle($action) {
-  $function = $action == 'enable' ? 'module_enable' : 'module_disable';
-  $$function('devel_themer');
-  drupal_set_message(t('Devel Themer module %action.', array('%action' => $action)));
-  drupal_goto();
 }
 
 function devel_themer_admin_settings() {
