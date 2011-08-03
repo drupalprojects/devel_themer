@@ -146,11 +146,10 @@ function devel_themer_log() {
   }
 }
 
-
-
 /**
- * Intercepts all theme calls (including templates), adds to template log, and dispatches to original theme function.
- * This function gets injected into theme registry in devel_exit().
+ * Implements hook_theme_registry_alter().
+ *
+ * Route all theme hooks to devel_themer_catch_function().
  */
 function devel_themer_theme_registry_alter(&$theme_registry) {
   foreach ($theme_registry as $hook => $data) {
@@ -171,6 +170,23 @@ function devel_themer_theme_registry_alter(&$theme_registry) {
   }
 }
 
+/**
+ * Implements hook_module_implements_alter().
+ *
+ * Ensure devel_themer_theme_registry_alter() runs as late as possible.
+ */
+function devel_themer_module_implements_alter(&$implementations, $hook) {
+  if ($hook == 'theme_registry_alter') {
+    // Unsetting and resetting moves the item to the end of the array.
+    $group = $implementations['devel_themer'];
+    unset($implementations['devel_themer']);
+    $implementations['devel_themer'] = $group;
+  }
+}
+
+/**
+ * Intercepts all theme calls (including templates), adds to template log, and dispatches to original theme function.
+ */
 function devel_themer_catch_function() {
   $trace = debug_backtrace(FALSE);
   $hook = $trace[1]['args'][0];
@@ -263,6 +279,9 @@ function devel_themer_catch_function() {
   return isset($output) ? $output : $return;
 }
 
+/**
+ * Near clone of theme().
+ */
 function devel_themer_theme_twin($hook, $variables) {
   static $hooks = NULL;
   $thmr_key = $variables['thmr_key'];
@@ -495,11 +514,6 @@ function devel_themer_theme_twin($hook, $variables) {
   $theme_path = $temp;
   return array($output, $meta);
 }
-
-/*
- * Implements hook_page_alter().
- * Add pre and post render functions to elements in the page.
- */
 
 // We save the huge js array here instead of hook_footer so we can catch theme('page')
 function devel_themer_exit() {
