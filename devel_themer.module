@@ -213,7 +213,13 @@ function devel_themer_catch_function() {
     if (!strpos($return, $key)) {
       // Exclude wrapping a SPAN around content returned by theme functions
       // whose result is not intended for HTML usage.
-      if (!in_array($hook, array('options_none'))) {
+      $exclude = array('options_none');
+
+      // theme_html_tag() is a low-level theme function intended primarily for
+      // markup added to the document HEAD.
+      $exclude[] = 'html_tag';
+
+      if (!in_array($hook, $exclude)) {
         $return = '<span thmr="' . $key . '">' . $return . '</span>';
       }
     }
