@@ -209,10 +209,13 @@ function devel_themer_catch_function() {
   if (!empty($return) && !is_array($return) && !is_object($return) && user_access('access devel information')) {
     $key = "thmr_$counter";
 
-    // Check for themer attribute in content returned
+    // Check for themer attribute in content returned.
     if (!strpos($return, $key)) {
-       // TODO exclude some hooks here.
-      $return = '<span thmr="' . $key . '">' . $return . '</span>';
+      // Exclude wrapping a SPAN around content returned by theme functions
+      // whose result is not intended for HTML usage.
+      if (!in_array($hook, array('options_none'))) {
+        $return = '<span thmr="' . $key . '">' . $return . '</span>';
+      }
     }
 
     if ($meta['type'] == 'func') {
