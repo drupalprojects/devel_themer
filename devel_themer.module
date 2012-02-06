@@ -226,7 +226,7 @@ function devel_themer_catch_function() {
     }
 
     if ($meta['type'] == 'func') {
-      $name = $meta['name'];
+      $name = $meta['hook'];
       $used = $meta['used'];
       if (empty($meta['wildcards'])) {
         $meta['wildcards'] = array($hook);
@@ -237,11 +237,12 @@ function devel_themer_catch_function() {
       }
     }
     else {
-      $name = $meta['name'];
-      if (empty($suggestions)) {
-        array_unshift($meta['suggestions'], $meta['used']);
+      $name = strtr($meta['hook'], '_', '-') . $meta['extension'];
+      $candidates = array();
+      foreach (array_reverse($meta['suggestions']) as $suggestion) {
+        $candidates[] = strtr($suggestion, '_', '-') . $meta['extension'];
       }
-      $candidates = array_reverse($meta['suggestions']);
+      $candidates[] = $name;
       $used = $meta['used'];
     }
 
@@ -290,7 +291,22 @@ function devel_themer_catch_function() {
 }
 
 /**
- * Near clone of theme().
+ * Nearly clones the Drupal API theme() function, but returns meta information in addition to the rendered output.
+ *
+ * Usage:
+ * @code
+ *   list($output, $meta) = devel_themer_theme_twin($hook, $variables);
+ * @endcode
+ *
+ * @return
+ *  An array with two items:
+ *  - $output: The rendered HTML.
+ *  - $meta: An associative array with the following keys:
+ *    - 'wildcards': Candidate hooks which have been looked at but don't have
+ *       an implementation.
+ *    - 'hook': The first found hook with an implementation.
+ *    - 'path': The path to the theme that implements $meta['hook'].
+ *    @todo Document remaining keys.
  */
 function devel_themer_theme_twin($hook, $variables) {
   static $hooks = NULL;
@@ -333,7 +349,7 @@ function devel_themer_theme_twin($hook, $variables) {
       if (isset($hooks[$hook])) {
         break;
       }
-      $meta['wildcards'] = $hook;
+      $meta['wildcards'][] = $hook;
     }
     if (!isset($hooks[$hook])) {
       // Only log a message when not trying theme suggestions ($hook being an
@@ -511,7 +527,7 @@ function devel_themer_theme_twin($hook, $variables) {
     }
     $meta['type'] = 'tpl';
     $meta['used'] = $template_file;
-
+    $meta['extension'] = $extension;
     $meta['suggestions'] = $suggestions;
     $meta['template_file'] = $template_file;
     $meta['preprocessors'] = isset($info['preprocess functions']) ? $info['preprocess functions'] : array();
