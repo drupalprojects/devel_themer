@@ -552,11 +552,16 @@ function devel_themer_exit() {
     // We used to write this to DB but was getting 'Warning: Got a packet bigger than 'max_allowed_packet' bytes'
     // Writing to temp dir means we don't worry about folder existence/perms and cleanup is free.
     try {
-      file_save_data(serialize($GLOBALS['devel_themer_server']), "temporary://devel_themer_$request_id", FILE_EXISTS_REPLACE);
+      $file = file_save_data(serialize($GLOBALS['devel_themer_server']), "temporary://devel_themer_$request_id", FILE_EXISTS_REPLACE);
     }
     catch (Exception $e) {
-      file_save_data(serialize(array("unables to save variables, probably due to pdo")), "temporary://devel_themer_$request_id", FILE_EXISTS_REPLACE);
+      $file = file_save_data(serialize(array("unables to save variables, probably due to pdo")), "temporary://devel_themer_$request_id", FILE_EXISTS_REPLACE);
     }
+
+    // file_save_data() saves the file with permanent status. Change this to
+    // temporary so that system_cron() garbage collects them.
+    $file->status = 0;
+    file_save($file);
 
     $GLOBALS['devel_theme_calls']['request_id'] = $request_id;
     $GLOBALS['devel_theme_calls']['devel_themer_uri'] = url("devel_themer/variables/$request_id");
@@ -659,34 +664,4 @@ function devel_themer_popup() {
 EOT;
 
   drupal_add_js(array('thmr_popup' => $popup), 'setting');
-}
-
-/**
- * Clean up the files we dropped in the temp dir in devel_themer_exit().
- *
- * Limitation: one more devel_themer_exit() will run after this function is
- * called and drop one more file, since hook_exit() is called after the normal
- * page cycle.
- *
- * @return
- *   void.
- */
-function devel_themer_cleanup() {
-  $scan = file_scan_directory('temporary://', '/^devel_themer_/', array('recurse' => FALSE));
-  foreach (array_keys($scan) as $file) {
-    $fid = db_query('SELECT fid FROM {file_managed} WHERE uri = :uri', array(':uri' => "temporary://$file"))->fetchField();
-    if (!empty($fid)) {
-      file_delete($file);
-    }
-  }
-}
-
-/**
- * Implement hook_cron() for periodic cleanup.
- *
- * @return
- *   void.
- */
-function devel_themer_cron() {
-  devel_themer_cleanup();
 }
