@@ -185,7 +185,7 @@
    */
   function thmrRebuildPopup(objs) {
     // rebuild the popup box
-    var id = objs[0].getAttribute('thmr');
+    var id = objs[0].getAttribute('thmr').split(' ').reverse()[0];
     // vars is the settings array element for this theme item
     var vars = Drupal.settings[id];
     // strs is the translatable strings
@@ -209,14 +209,19 @@
 
     // parents
     var parents = '';
-    parents = strs.parents +' <span class="parents">';
-    for(i=1;i<objs.length;i++) {
-      var thmrid = $(objs[i]).attr('thmr')
-      var pvars = Drupal.settings[thmrid];
-      parents += i!=1 ? '&lt; ' : '';
-      // populate the parents
-      // each parent is wrapped with a span containing a 'trig' attribute with the id of the element it represents
-      parents += '<span class="parent" trig="'+ thmrid +'">'+ pvars.name +'</span> ';
+    var parents = strs.parents +' <span class="parents">';
+    var isFirst = true;
+    for (i = 0; i < objs.length; i++) {
+      thmr_ids = objs[i].getAttribute('thmr').split(' ').reverse();
+      for (j = (i==0?1:0); j < thmr_ids.length; j++) {
+        var thmrid = thmr_ids[j];
+        var pvars = Drupal.settings[thmrid];
+        parents += (isFirst) ? '' : '&lt; ';
+        // populate the parents
+        // each parent is wrapped with a span containing a 'trig' attribute with the id of the element it represents
+        parents += '<span class="parent" trig="'+ objs[i].getAttribute('thmr') +'">'+ pvars.name +'</span> ';
+        isFirst = false;
+      }
     }
     parents += '</span>';
     // stick the parents spans in the #parents div
