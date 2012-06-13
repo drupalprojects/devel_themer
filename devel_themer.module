@@ -78,7 +78,12 @@ function devel_themer_init() {
     $path = drupal_get_path('module', 'devel_themer');
     drupal_add_js($path . '/devel_themer.js');
     drupal_add_css($path . '/devel_themer.css');
-    drupal_add_css($path . '/devel_themer_ie_fix.css', array('browsers' => array('IE' => TRUE, '!IE' => FALSE), 'media' => 'screen', 'weight' => 20, 'preprocess' => FALSE));
+    drupal_add_css($path . '/devel_themer_ie_fix.css', array(
+      'browsers' => array('IE' => 'lt IE 7', '!IE' => FALSE),
+      'media' => 'screen',
+      'weight' => 20,
+      'preprocess' => FALSE,
+    ));
 
     // Add krumo JS and CSS. We can't rely on krumo automatically doing this,
     // because we add our HTML dynamically after initial page load.
