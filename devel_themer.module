@@ -211,7 +211,11 @@ function devel_themer_inject_markers($html, $marker) {
       $element->setAttribute('thmr', $marker);
     }
   }
-  return (string)$html_dom;
+  $html = (string)$html_dom;
+  // Release memory.
+  $html_dom->clear();
+  unset($html_dom);
+  return $html;
 }
 
 /**
