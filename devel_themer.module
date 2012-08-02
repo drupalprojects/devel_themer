@@ -261,10 +261,12 @@ function devel_themer_catch_function() {
     if ($meta['type'] == 'func') {
       $name = $meta['hook'];
       $used = $meta['used'];
-      if (empty($meta['wildcards'])) {
-        $meta['wildcards'] = array($hook);
+      global $theme;
+      $candidates = array();
+      foreach (array_reverse($meta['suggestions']) as $suggestion) {
+        $candidates[] = "{$theme}_{$suggestion}";
       }
-      $candidates = $meta['wildcards'];
+      $candidates[] = "{$theme}_{$name}";
       if (empty($meta['variables'])) {
         $variables = array();
       }
@@ -513,6 +515,7 @@ function devel_themer_theme_twin($hook, $variables) {
       $output = $info['function']($variables);
       $meta['type'] = 'func';
       $meta['used'] = $info['function'];
+      $meta['suggestions'] = $suggestions;
     }
   }
   else {
