@@ -255,9 +255,7 @@ function devel_themer_catch_function() {
       $exclude[] = 'html_tag';
 
       // DATE MODULE: Inline labels for date select lists shouldn't be wrapped.
-      if (strpos($hook, 'date_part_label_') === 0
-            && $variables['element']['#type'] == 'date_select'
-            && $variables['element']['#date_label_position'] == 'within') {
+      if (strpos($meta['hook'], 'date_part_label_') === 0 && $variables['element']['#type'] == 'date_select' && $variables['element']['#date_label_position'] == 'within') {
         $exclude[] = $hook;
       }
 
