@@ -8,7 +8,7 @@ span.devel-themer-wrapper {
   position: fixed;
   right: 10px;
   top: 10px;
-  z-index: 10000;
+  z-index: 100000;
 }
 
 #themer-relativer {
@@ -28,7 +28,7 @@ span.devel-themer-wrapper {
   right: 0;
   text-align: left;
   width: 400px;
-  z-index: 10001;
+  z-index: 100001;
 }
 
 #themer-popup h2,
@@ -155,7 +155,7 @@ span.devel-themer-wrapper {
   opacity: .8;
   padding: 3px 5px;
   position: fixed;
-  z-index: 10002;
+  z-index: 100002;
 }
 
 #themer-popup div.krumo-element {
