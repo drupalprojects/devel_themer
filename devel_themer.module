@@ -204,6 +204,11 @@ function devel_themer_module_implements_alter(&$implementations, $hook) {
  * @param string $marker
  */
 function devel_themer_inject_markers($html, $marker) {
+  if (module_exists('simplehtmldom')) {
+    drupal_set_message(t('<a href="http://drupal.org/project/simplehtmldom">Simplehtmldom</a> module is missing and required by Theme developer.'), 'error', FALSE);
+    return $html;
+  }
+
   $html_dom = new simple_html_dom();
   $html_dom->load($html);
   foreach ($html_dom->root->nodes as $element) {
