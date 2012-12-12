@@ -3,7 +3,6 @@
   
   $(document).ready(function () {
     lastObj = false;
-    thmrSpanified = false;
     strs = Drupal.settings.thmrStrings;
     $('body').addClass("thmr_call").attr("id", "thmr_" + Drupal.settings.page_id);
     $('[data-thmr]')
@@ -29,9 +28,6 @@
         document.onclick = themerEvent;
         if (lastObj != false) {
           $(lastObj).css('outline', '3px solid #999');
-        }
-        if (!thmrSpanified) {
-          spanify();
         }
       }
       else {
@@ -87,23 +83,6 @@
       thmrRebuildPopup(objs);
     }
     return false;
-  }
-
-  function spanify() {
-    $('span[thmr]')
-      .each(function () {
-        // make spans around block elements into block elements themselves
-        var kids = $(this).children();
-        for(i=0;i<kids.length;i++) {
-          //console.log(kids[i].style.display);
-          if ($(kids[i]).css('display') != 'inline' && $(kids[i]).is('DIV, P, ADDRESS, BLOCKQUOTE, CENTER, DIR, DL, FIELDSET, FORM, H1, H2, H3, H4, H5, H6, HR, ISINDEX, MENU, NOFRAMES, NOSCRIPT, OL, PRE, TABLE, UL,  DD, DT, FRAMESET, LI, TBODY, TD, TFOOT, TH, THEAD, TR')) {
-            $(this).css('display', 'block');
-          }
-        }
-      });
-    thmrSpanified = true;
-    // turn off the throbber
-    //$('#themer-toggle img.throbber').hide();
   }
 
   function thmrInPop(obj) {
