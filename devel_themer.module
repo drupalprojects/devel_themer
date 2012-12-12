@@ -213,7 +213,9 @@ function devel_themer_inject_markers($html, $marker) {
   $html_dom->load($html);
   foreach ($html_dom->root->nodes as $element) {
     if ($element->nodetype == HDOM_TYPE_TEXT) {
-      $element->innertext = "<span " . DEVEL_THEMER_ATTRIBUTE ."='$marker' class='devel-themer-wrapper'>{$element->innertext}</span>";
+      if (trim($element->innertext) !== '') {
+        $element->innertext = "<span " . DEVEL_THEMER_ATTRIBUTE . "='$marker' class='devel-themer-wrapper'>{$element->innertext}</span>";
+      }
     }
     elseif ($element->hasAttribute(DEVEL_THEMER_ATTRIBUTE)) {
       $element->setAttribute(DEVEL_THEMER_ATTRIBUTE, "$marker " . $element->getAttribute(DEVEL_THEMER_ATTRIBUTE));
