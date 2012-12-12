@@ -6,7 +6,7 @@
     thmrSpanified = false;
     strs = Drupal.settings.thmrStrings;
     $('body').addClass("thmr_call").attr("id", "thmr_" + Drupal.settings.page_id);
-    $('[thmr]')
+    $('[data-thmr]')
     .hover(
       function () {
         if (themerEnabled && this.parentNode.nodeName != 'BODY' && $(this).attr('thmr_curr') != 1) {
@@ -127,16 +127,16 @@
   }
 
   /**
-   * Find all parents with @thmr"
+   * Find all parents with @data-thmr"
    */
   function thmrFindParents(obj) {
     var parents = new Array();
-    if ($(obj).attr('thmr') != undefined) {
+    if ($(obj).attr('data-thmr') != undefined) {
       parents[parents.length] = obj;
     }
     if (obj && obj.parentNode) {
       while ((obj = obj.parentNode) && (obj.nodeType != 9)) {
-        if ($(obj).attr('thmr') != undefined) {
+        if ($(obj).attr('data-thmr') != undefined) {
           parents[parents.length] = obj;
         }
       }
@@ -185,7 +185,7 @@
    */
   function thmrRebuildPopup(objs) {
     // rebuild the popup box
-    var id = objs[0].getAttribute('thmr').split(' ').reverse()[0];
+    var id = objs[0].getAttribute('data-thmr').split(' ').reverse()[0];
     // vars is the settings array element for this theme item
     var vars = Drupal.settings[id];
     // strs is the translatable strings
@@ -212,14 +212,14 @@
     var parents = strs.parents +' <span class="parents">';
     var isFirst = true;
     for (i = 0; i < objs.length; i++) {
-      thmr_ids = objs[i].getAttribute('thmr').split(' ').reverse();
+      thmr_ids = objs[i].getAttribute('data-thmr').split(' ').reverse();
       for (j = (i==0?1:0); j < thmr_ids.length; j++) {
         var thmrid = thmr_ids[j];
         var pvars = Drupal.settings[thmrid];
         parents += (isFirst) ? '' : '&lt; ';
         // populate the parents
         // each parent is wrapped with a span containing a 'trig' attribute with the id of the element it represents
-        parents += '<span class="parent" trig="'+ objs[i].getAttribute('thmr') +'">'+ pvars.name +'</span> ';
+        parents += '<span class="parent" trig="'+ objs[i].getAttribute('data-thmr') +'">'+ pvars.name +'</span> ';
         isFirst = false;
       }
     }
@@ -229,7 +229,7 @@
     $('#themer-popup span.parent')
       .click(function() {
         var thmr_id = $(this).attr('trig');
-        var thmr_obj = $('[thmr = "' + thmr_id + '"]')[0];
+        var thmr_obj = $('[data-thmr = "' + thmr_id + '"]')[0];
         themerDoIt(thmr_obj);
       })
       .hover(
