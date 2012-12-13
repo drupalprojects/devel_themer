@@ -204,7 +204,7 @@ function devel_themer_module_implements_alter(&$implementations, $hook) {
  * @param string $marker
  */
 function devel_themer_inject_markers($html, $marker) {
-  if (module_exists('simplehtmldom')) {
+  if (!module_exists('simplehtmldom')) {
     drupal_set_message(t('<a href="http://drupal.org/project/simplehtmldom">Simplehtmldom</a> module is missing and required by Theme developer.'), 'error', FALSE);
     return $html;
   }
