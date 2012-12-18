@@ -1,23 +1,10 @@
 
 (function ($) {
-  
+
   $(document).ready(function () {
     lastObj = false;
     strs = Drupal.settings.thmrStrings;
     $('body').addClass("thmr_call").attr("id", "thmr_" + Drupal.settings.page_id);
-    $('[data-thmr]')
-    .hover(
-      function () {
-        if (themerEnabled && this.parentNode.nodeName != 'BODY' && $(this).attr('thmr_curr') != 1) {
-          $(this).css('outline', 'red solid 1px');
-        }
-      },
-      function () {
-        if (themerEnabled && $(this).attr('thmr_curr') != 1) {
-          $(this).css('outline', 'none');
-        }
-      }
-    );
 
     var themerEnabled = 0;
     var themerToggle = function () {
@@ -29,12 +16,25 @@
         if (lastObj != false) {
           $(lastObj).css('outline', '3px solid #999');
         }
+        $('[data-thmr]').hover(
+          function () {
+            if (this.parentNode.nodeName != 'BODY' && $(this).attr('thmr_curr') != 1) {
+              $(this).css('outline', 'red solid 1px');
+            }
+          },
+          function () {
+            if ($(this).attr('thmr_curr') != 1) {
+              $(this).css('outline', 'none');
+            }
+          }
+        );
       }
       else {
         document.onclick = null;
         if (lastObj != false) {
           $(lastObj).css('outline', 'none');
         }
+        $('[data-thmr]').unbind('mouseenter mouseleave');
       }
     };
     $(Drupal.settings.thmr_popup)
@@ -57,7 +57,7 @@
       themerToggle();
     });
   });
-  
+
   /**
    * Known issue: IE does NOT support outline css property.
    * Solution: use another browser
