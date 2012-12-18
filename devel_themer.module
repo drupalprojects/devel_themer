@@ -239,6 +239,9 @@ function devel_themer_catch_function() {
   $hook = $trace[1]['args'][0];
   if (sizeof($trace[1]['args']) > 1) {
     $variables =  $trace[1]['args'][1];
+    if (!is_array($variables)) {
+      watchdog('devel_themer', 'Variables should be passed as an associative array to the theme hook !hook.', array('!hook' => is_array($hook) ? implode(', ', $hook) : $hook), WATCHDOG_ERROR);
+    }
   }
   else {
     $variables = array();
