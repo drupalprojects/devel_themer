@@ -53,6 +53,10 @@ function devel_themer_ajax_variables($key) {
  * Implements hook_init().
  */
 function devel_themer_init() {
+  // Make sure the temporary directory exists.
+  $directory = "temporary://devel_themer";
+  file_prepare_directory($directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
+
   if (user_access('access devel information')) {
     // Add requisite libraries.
     drupal_add_library('system', 'jquery.form');
@@ -329,35 +333,40 @@ function devel_themer_compression_enabled() {
  * when needed.
  */
 function devel_themer_store_krumo($variables) {
-  $directory = "temporary://devel_themer";
-  file_prepare_directory($directory, FILE_CREATE_DIRECTORY | FILE_MODIFY_PERMISSIONS);
-
   // Sometimes serialize will fail, so we will use krumo_ob as a backup.
   // We don't use krumo_ob by default because it's resource heavy.
-  $output = serialize($variables);
-  if (empty($output)) {
-    $output = krumo_ob($variables);
-    $filename = 'k' . sha1($output);
+  $data = serialize($variables);
+  if (empty($data)) {
+    $data = krumo_ob($variables);
+    $filename = 'k' . sha1($data);
   }
   else {
-    $filename = 's' . sha1($output);
+    $filename = 's' . sha1($data);
   }
 
   if (devel_themer_compression_enabled()) {
     $filename = 'c' . $filename;
-    $output = gzcompress($output);
+    $data = gzcompress($data);
   }
 
   // Write the variables information to the a file. It will be retrieved on demand via AJAX.
   // We used to write this to DB but was getting 'Warning: Got a packet bigger than 'max_allowed_packet' bytes'
   // Writing to temp dir means we don't worry about folder existence/perms and cleanup is free.
-  $file = file_save_data($output, "temporary://devel_themer/$filename", FILE_EXISTS_REPLACE);
-  // file_save_data() saves the file with permanent status. Change this to
-  // temporary so that system_cron() garbage collects them.
-  $file->status = 0;
-  file_save($file);
-
+  file_put_contents("temporary://devel_themer/$filename", $data);
   return $filename;
+}
+
+/**
+ * Implements hook_cron().
+ */
+function devel_themer_cron() {
+  // We don't use managed temporary files any more because of performance issues
+  // so we need to clean up old files ourselves.
+  foreach (file_scan_directory('temporary://devel_themer/', '/.*/') as $file) {
+    if (filemtime($file->uri) < REQUEST_TIME - DRUPAL_MAXIMUM_TEMP_FILE_AGE) {
+      unlink($file->uri);
+    }
+  }
 }
 
 /**
