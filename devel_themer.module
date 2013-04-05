@@ -639,7 +639,7 @@ function devel_themer_post_process_page($page, $elements) {
   if (!empty($GLOBALS['devel_theme_calls']) && $_SERVER['REQUEST_METHOD'] != 'POST') {
     $GLOBALS['devel_theme_calls']['devel_themer_uri'] = url("devel_themer/variables");
     $javascript = '<script type="text/javascript">jQuery.extend(Drupal.settings, ' . drupal_json_encode($GLOBALS['devel_theme_calls']) . ");</script>\n";
-    $page = preg_replace('#</body>#', "/n$javascript/n</body>", $page, 1);
+    $page = preg_replace('#</body>#', "\n$javascript\n</body>", $page, 1);
   }
   return $page;
 }
