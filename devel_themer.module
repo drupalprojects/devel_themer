@@ -453,7 +453,7 @@ function devel_themer_theme_twin($hook, $variables, &$meta) {
       // Only log a message when not trying theme suggestions ($hook being an
       // array).
       if (!isset($candidate)) {
-        watchdog('theme', 'Theme hook %hook not found.', array('%hook' => $hook), WATCHDOG_WARNING);
+        watchdog('devel_themer', 'Theme hook %hook not found.', array('%hook' => $hook), WATCHDOG_WARNING);
       }
       return '';
     }
