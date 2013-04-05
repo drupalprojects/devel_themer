@@ -163,7 +163,7 @@ function devel_themer_theme_registry_alter(&$theme_registry) {
  * Ensure devel_themer_theme_registry_alter() runs as late as possible.
  */
 function devel_themer_module_implements_alter(&$implementations, $hook) {
-  if ($hook == 'theme_registry_alter') {
+  if (in_array($hook, array('page_alter', 'theme_registry_alter'))) {
     // Unsetting and resetting moves the item to the end of the array.
     $group = $implementations['devel_themer'];
     unset($implementations['devel_themer']);
@@ -628,14 +628,20 @@ function devel_themer_theme_twin($hook, $variables, &$meta) {
   return $output;
 }
 
-// We save the huge js array here instead of hook_footer so we can catch theme('page')
-function devel_themer_exit() {
-  // TODO: limit to html pages only $router_item = menu_get_item();
-  //delivery_callback
+/**
+ * Implements hook_page_alter().
+ */
+function devel_themer_page_alter(&$page) {
+  $page['#post_render'][] = 'devel_themer_post_process_page';
+}
+
+function devel_themer_post_process_page($page, $elements) {
   if (!empty($GLOBALS['devel_theme_calls']) && $_SERVER['REQUEST_METHOD'] != 'POST') {
     $GLOBALS['devel_theme_calls']['devel_themer_uri'] = url("devel_themer/variables");
-    print '<script type="text/javascript">jQuery.extend(Drupal.settings, ' . drupal_json_encode($GLOBALS['devel_theme_calls']) . ");</script>\n";
+    $javascript = '<script type="text/javascript">jQuery.extend(Drupal.settings, ' . drupal_json_encode($GLOBALS['devel_theme_calls']) . ");</script>\n";
+    $page = preg_replace('#</body>#', "/n$javascript/n</body>", $page, 1);
   }
+  return $page;
 }
 
 // just hand out next counter, or return current value
