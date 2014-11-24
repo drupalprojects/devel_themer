@@ -4,7 +4,7 @@ package = Development
 core = 7.x
 
 dependencies[] = devel
-dependencies[] = simplehtmldom
+dependencies[] = simplehtmldom (1.x)
 
 configure = admin/config/development/devel_themer
 files[] = devel_themer.module
